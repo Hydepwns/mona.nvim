@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-integration validate clean coverage help
+.PHONY: test test-unit test-integration validate clean coverage lint help
 
 # Default target
 help:
@@ -8,6 +8,7 @@ help:
 	@echo "  test-integration - Run integration tests only"
 	@echo "  validate      - Run validation script"
 	@echo "  coverage      - Run tests with coverage report"
+	@echo "  lint          - Run luacheck linting"
 	@echo "  clean         - Clean up test artifacts"
 
 # Run all tests
@@ -51,6 +52,12 @@ coverage:
 	@lua -lluacov test/test_init.lua
 	@luacov
 	@echo "Coverage report generated: luacov.report.out"
+
+# Run luacheck linting
+lint:
+	@echo "Running luacheck linting..."
+	@luacheck lua/ test/ validate.lua --no-max-line-length
+	@echo "✓ Linting completed"
 
 # Clean up test artifacts
 clean:
