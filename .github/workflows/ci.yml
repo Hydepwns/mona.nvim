@@ -1,0 +1,154 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        lua-version: [5.1, 5.2, 5.3, 5.4]
+        neovim-version: [0.9.0, 0.10.0, nightly]
+        exclude:
+          # Skip nightly with older Lua versions
+          - lua-version: 5.1
+            neovim-version: nightly
+          - lua-version: 5.2
+            neovim-version: nightly
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Lua ${{ matrix.lua-version }}
+      uses: leafo/gh-actions-lua@v10
+      with:
+        luaVersion: ${{ matrix.lua-version }}
+
+    - name: Setup Neovim ${{ matrix.neovim-version }}
+      run: |
+        if [ "${{ matrix.neovim-version }}" = "nightly" ]; then
+          curl -L https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz | tar xz
+          sudo mv nvim-linux64/bin/nvim /usr/local/bin/
+          sudo mv nvim-linux64/lib/nvim /usr/local/lib/
+          sudo mv nvim-linux64/share/nvim /usr/local/share/
+        else
+          curl -L https://github.com/neovim/neovim/releases/download/v${{ matrix.neovim-version }}/nvim-linux64.tar.gz | tar xz
+          sudo mv nvim-linux64/bin/nvim /usr/local/bin/
+          sudo mv nvim-linux64/lib/nvim /usr/local/lib/
+          sudo mv nvim-linux64/share/nvim /usr/local/share/
+        fi
+
+    - name: Install dependencies
+      run: |
+        luarocks install --local luacov
+        luarocks install --local plenary.nvim
+        eval "$(luarocks path --bin)"
+
+    - name: Run validation
+      run: lua validate.lua
+
+    - name: Run unit tests
+      run: |
+        eval "$(luarocks path --bin)"
+        lua test/test_config.lua
+        lua test/test_utils.lua
+        lua test/test_highlights.lua
+        lua test/test_preview.lua
+        lua test/test_health.lua
+        lua test/test_terminal.lua
+        lua test/test_installer.lua
+        lua test/test_init.lua
+
+    - name: Run integration tests
+      run: |
+        eval "$(luarocks path --bin)"
+        nvim --headless -u test/minimal_init.lua -c "lua require('plenary.busted').run('test/plugin/integration_spec.lua')"
+
+    - name: Run tests with coverage
+      run: |
+        eval "$(luarocks path --bin)"
+        lua -lluacov test/test_config.lua
+        lua -lluacov test/test_utils.lua
+        lua -lluacov test/test_highlights.lua
+        lua -lluacov test/test_preview.lua
+        lua -lluacov test/test_health.lua
+        lua -lluacov test/test_terminal.lua
+        lua -lluacov test/test_installer.lua
+        lua -lluacov test/test_init.lua
+        luacov
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./luacov.report.out
+        flags: lua-${{ matrix.lua-version }}-nvim-${{ matrix.neovim-version }}
+        name: lua-${{ matrix.lua-version }}-nvim-${{ matrix.neovim-version }}
+        fail_ci_if_error: false
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Lua 5.4
+      uses: leafo/gh-actions-lua@v10
+      with:
+        luaVersion: 5.4
+
+    - name: Install luacheck
+      run: |
+        luarocks install --local luacheck
+        eval "$(luarocks path --bin)"
+
+    - name: Run luacheck
+      run: |
+        eval "$(luarocks path --bin)"
+        luacheck lua/ test/ validate.lua --no-max-line-length
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Lua 5.4
+      uses: leafo/gh-actions-lua@v10
+      with:
+        luaVersion: 5.4
+
+    - name: Setup Neovim
+      run: |
+        curl -L https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-linux64.tar.gz | tar xz
+        sudo mv nvim-linux64/bin/nvim /usr/local/bin/
+        sudo mv nvim-linux64/lib/nvim /usr/local/lib/
+        sudo mv nvim-linux64/share/nvim /usr/local/share/
+
+    - name: Install dependencies
+      run: |
+        luarocks install --local luacov
+        luarocks install --local plenary.nvim
+        eval "$(luarocks path --bin)"
+
+    - name: Run all tests
+      run: |
+        eval "$(luarocks path --bin)"
+        make test
+
+    - name: Generate coverage report
+      run: |
+        eval "$(luarocks path --bin)"
+        make coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./luacov.report.out
+        flags: build
+        name: build-coverage 

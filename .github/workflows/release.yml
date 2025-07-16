@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Lua 5.4
+      uses: leafo/gh-actions-lua@v10
+      with:
+        luaVersion: 5.4
+
+    - name: Setup Neovim
+      run: |
+        curl -L https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-linux64.tar.gz | tar xz
+        sudo mv nvim-linux64/bin/nvim /usr/local/bin/
+        sudo mv nvim-linux64/lib/nvim /usr/local/lib/
+        sudo mv nvim-linux64/share/nvim /usr/local/share/
+
+    - name: Install dependencies
+      run: |
+        luarocks install --local luacov
+        luarocks install --local plenary.nvim
+        eval "$(luarocks path --bin)"
+
+    - name: Run tests
+      run: |
+        eval "$(luarocks path --bin)"
+        make test
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          ## Changes in this release
+          
+          See [CHANGELOG.md](CHANGELOG.md) for detailed changes.
+          
+          ## Installation
+          
+          ```lua
+          {
+            "hydepwns/mona.nvim",
+            lazy = false,
+            build = ":MonaInstall variable all",
+            opts = {
+              -- Your configuration here
+            }
+          }
+          ```
+        draft: false
+        prerelease: false 

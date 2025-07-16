@@ -1,0 +1,44 @@
+name: Dependabot
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Lua 5.4
+      uses: leafo/gh-actions-lua@v10
+      with:
+        luaVersion: 5.4
+
+    - name: Setup Neovim
+      run: |
+        curl -L https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-linux64.tar.gz | tar xz
+        sudo mv nvim-linux64/bin/nvim /usr/local/bin/
+        sudo mv nvim-linux64/lib/nvim /usr/local/lib/
+        sudo mv nvim-linux64/share/nvim /usr/local/share/
+
+    - name: Install dependencies
+      run: |
+        luarocks install --local luacov
+        luarocks install --local plenary.nvim
+        eval "$(luarocks path --bin)"
+
+    - name: Run tests
+      run: |
+        eval "$(luarocks path --bin)"
+        make test
+
+    - name: Auto-approve Dependabot PRs
+      if: success()
+      run: |
+        gh pr review --approve "$PR_URL"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_URL: ${{ github.event.pull_request.html_url }} 

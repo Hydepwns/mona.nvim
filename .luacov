@@ -1,0 +1,29 @@
+-- luacov configuration file
+return {
+  -- Include all Lua files in the project
+  include = {
+    "lua/**/*.lua",
+    "test/**/*.lua",
+    "validate.lua"
+  },
+  
+  -- Exclude test files and external dependencies
+  exclude = {
+    "test/plenary.nvim/**/*.lua",  -- External dependency
+    "test/minimal_init.lua",       -- Test setup file
+    "test/plugin/integration_spec.lua"  -- Integration test file
+  },
+  
+  -- Coverage thresholds
+  minimum_coverage = 80,
+  
+  -- Output files
+  reportfile = "luacov.report.out",
+  statsfile = "luacov.stats.out",
+  
+  -- HTML report settings
+  html = {
+    outputfile = "luacov-html/index.html",
+    includestats = true
+  }
+} 
