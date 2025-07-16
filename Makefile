@@ -56,7 +56,7 @@ coverage:
 # Run luacheck linting
 lint:
 	@echo "Running luacheck linting..."
-	@luacheck lua/ test/ validate.lua --no-max-line-length
+	@luacheck lua/ test/ validate.lua --exclude-files test/plenary.nvim --no-max-line-length
 	@echo "✓ Linting completed"
 
 # Clean up test artifacts
