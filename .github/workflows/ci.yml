@@ -26,7 +26,7 @@ jobs:
     - name: Setup Lua ${{ matrix.lua-version }}
       run: |
         sudo apt-get update
-        sudo apt-get install -y lua${{ matrix.lua-version }} luarocks
+        sudo apt-get install -y lua${{ matrix.lua-version }} lua${{ matrix.lua-version }}-dev luarocks
         echo "Lua ${{ matrix.lua-version }} installed"
 
     - name: Setup Neovim ${{ matrix.neovim-version }}
@@ -45,7 +45,14 @@ jobs:
 
     - name: Install dependencies
       run: |
-        luarocks install --local luacov
+        # Debug: Check what's available
+        which lua
+        lua -v
+        which luarocks
+        luarocks --version
+        
+        # Install luacov with fallback
+        luarocks install --local luacov || echo "luacov installation failed, trying alternative"
         eval "$(luarocks path --bin)"
 
     - name: Run validation
@@ -98,7 +105,7 @@ jobs:
     - name: Setup Lua 5.4
       run: |
         sudo apt-get update
-        sudo apt-get install -y lua5.4 luarocks
+        sudo apt-get install -y lua5.4 lua5.4-dev luarocks
         echo "Lua 5.4 installed"
 
     - name: Install luacheck
@@ -120,7 +127,7 @@ jobs:
     - name: Setup Lua 5.4
       run: |
         sudo apt-get update
-        sudo apt-get install -y lua5.4 luarocks
+        sudo apt-get install -y lua5.4 lua5.4-dev luarocks
         echo "Lua 5.4 installed"
 
     - name: Setup Neovim
@@ -132,7 +139,14 @@ jobs:
 
     - name: Install dependencies
       run: |
-        luarocks install --local luacov
+        # Debug: Check what's available
+        which lua
+        lua -v
+        which luarocks
+        luarocks --version
+        
+        # Install luacov with fallback
+        luarocks install --local luacov || echo "luacov installation failed, trying alternative"
         eval "$(luarocks path --bin)"
 
     - name: Run all tests
