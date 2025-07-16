@@ -5,7 +5,9 @@
 
 Enhanced monospaced font management and configuration for Neovim.
 
->Monaspace is a next-generation font family from GitHub Next, designed for >code: ligatures, texture healing, and beautiful style mixing. [Learn more](https://github.com/githubnext/monaspace)
+>Monaspace is a next-generation font family from GitHub Next, designed for code: ligatures, texture healing, and beautiful style mixing. [Learn more](https://github.com/githubnext/monaspace)
+
+**💡 tldr; Want to see the fonts side by side?** Visit [monaspace.githubnext.com](https://monaspace.githubnext.com/) for an interactive font preview!
 
 ## Features
 
@@ -161,6 +163,8 @@ require("mona").setup({
 - **Xenon** - Slab serif
 - **Radon** - Handwritten style
 - **Krypton** - Display style
+
+**🎨 See all fonts in action:** [monaspace.githubnext.com](https://monaspace.githubnext.com/)
 
 ## CI/CD
 
