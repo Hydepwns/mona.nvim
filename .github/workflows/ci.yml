@@ -87,6 +87,12 @@ jobs:
         lua -lluacov test/test_installer.lua
         lua -lluacov test/test_init.lua
         luacov
+        
+    - name: Verify coverage file
+      run: |
+        ls -la *.out
+        echo "Coverage file size: $(wc -c < luacov.report.out) bytes"
+        head -10 luacov.report.out
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -95,6 +101,8 @@ jobs:
         flags: lua-${{ matrix.lua-version }}-nvim-${{ matrix.neovim-version }}
         name: lua-${{ matrix.lua-version }}-nvim-${{ matrix.neovim-version }}
         fail_ci_if_error: false
+        verbose: true
+        token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     runs-on: ubuntu-latest
@@ -159,10 +167,18 @@ jobs:
       run: |
         eval "$(luarocks path --bin)"
         make coverage
+        
+    - name: Verify coverage file
+      run: |
+        ls -la *.out
+        echo "Coverage file size: $(wc -c < luacov.report.out) bytes"
+        head -10 luacov.report.out
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         file: ./luacov.report.out
         flags: build
-        name: build-coverage 
+        name: build-coverage
+        verbose: true
+        token: ${{ secrets.CODECOV_TOKEN }} 
