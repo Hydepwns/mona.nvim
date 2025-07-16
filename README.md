@@ -1,7 +1,6 @@
 # mona.nvim
 
 [![CI](https://github.com/hydepwns/mona.nvim/workflows/CI/badge.svg)](https://github.com/hydepwns/mona.nvim/actions)
-[![Test Coverage](https://codecov.io/gh/hydepwns/mona.nvim/branch/main/graph/badge.svg)](https://codecov.io/gh/hydepwns/mona.nvim)
 
 Enhanced monospaced font management and configuration for Neovim.
 
@@ -171,7 +170,6 @@ require("mona").setup({
 This project uses GitHub Actions for continuous integration:
 
 - **Multi-version testing**: Lua 5.1-5.4 and Neovim 0.9.0, 0.10.0, nightly
-- **Code coverage**: Integrated with Codecov for coverage reporting
 - **Linting**: Automated code quality checks with luacheck
 - **Automated releases**: Tag-based releases with changelog generation
 
@@ -194,7 +192,7 @@ make test
 make test-unit          # Unit tests only
 make test-integration   # Integration tests only
 make validate           # Validation script
-make coverage           # Coverage report
+
 make clean              # Clean test artifacts
 ```
 
