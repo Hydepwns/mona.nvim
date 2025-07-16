@@ -66,7 +66,7 @@ jobs:
     - name: Run integration tests
       run: |
         eval "$(luarocks path --bin)"
-        nvim --headless -u test/minimal_init.lua -c "lua require('plenary.busted').run('test/plugin/integration_spec.lua')" || echo "Integration tests failed, but continuing"
+        lua test/run_integration.lua || echo "Integration tests failed, but continuing"
 
     - name: Run tests with coverage
       run: |
@@ -138,7 +138,8 @@ jobs:
     - name: Run all tests
       run: |
         eval "$(luarocks path --bin)"
-        make test
+        make test-unit
+        make test-integration
 
     - name: Generate coverage report
       run: |
