@@ -78,6 +78,9 @@ jobs:
     - name: Run tests with coverage
       run: |
         eval "$(luarocks path --bin)"
+        # Set up package path for proper module loading
+        export LUA_PATH="lua/?.lua;lua/?/init.lua;;"
+        # Run tests with luacov
         lua -lluacov test/test_config.lua
         lua -lluacov test/test_utils.lua
         lua -lluacov test/test_highlights.lua
@@ -86,6 +89,7 @@ jobs:
         lua -lluacov test/test_terminal.lua
         lua -lluacov test/test_installer.lua
         lua -lluacov test/test_init.lua
+        # Generate coverage report
         luacov
         
     - name: Verify coverage file
@@ -172,6 +176,9 @@ jobs:
     - name: Generate coverage report
       run: |
         eval "$(luarocks path --bin)"
+        # Set up package path for proper module loading
+        export LUA_PATH="lua/?.lua;lua/?/init.lua;;"
+        # Run coverage
         make coverage
         
     - name: Verify coverage file

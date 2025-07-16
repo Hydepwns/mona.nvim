@@ -42,15 +42,15 @@ validate:
 # Run tests with coverage
 coverage:
 	@echo "Running tests with coverage..."
-	@lua -lluacov test/test_config.lua
-	@lua -lluacov test/test_utils.lua
-	@lua -lluacov test/test_highlights.lua
-	@lua -lluacov test/test_preview.lua
-	@lua -lluacov test/test_health.lua
-	@lua -lluacov test/test_terminal.lua
-	@lua -lluacov test/test_installer.lua
-	@lua -lluacov test/test_init.lua
-	@luacov
+	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_config.lua
+	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_utils.lua
+	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_highlights.lua
+	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_preview.lua
+	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_health.lua
+	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_terminal.lua
+	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_installer.lua
+	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_init.lua
+	@eval "$$(luarocks path --bin)" && luacov
 	@echo "Coverage report generated: luacov.report.out"
 
 # Run luacheck linting
