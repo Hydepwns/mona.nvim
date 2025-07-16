@@ -5,6 +5,14 @@ All notable changes to mona.nvim will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2025-07-16
+
+### Fixed
+
+- Fixed Codecov coverage reporting issues by converting luacov format to lcov format
+- Improved CI reliability with better error handling and debugging
+- Resolved "Unusable report" errors in Codecov uploads
+
 ## [Unreleased]
 
 ### Added
