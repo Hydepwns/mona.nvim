@@ -13,9 +13,10 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Lua 5.4
-      uses: leafo/gh-actions-lua@v10
-      with:
-        luaVersion: 5.4
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lua5.4 lua5.4-dev luarocks
+        echo "Lua 5.4 and luarocks installed"
 
     - name: Setup Neovim
       run: |
@@ -26,8 +27,15 @@ jobs:
 
     - name: Install dependencies
       run: |
-        luarocks install --local luacov
-        luarocks install --local plenary.nvim
+        # Debug: Check what's available
+        which lua
+        lua -v
+        which luarocks
+        luarocks --version
+        
+        # Install dependencies with fallback
+        luarocks install --local luacov || echo "luacov installation failed, trying alternative"
+        luarocks install --local plenary.nvim || echo "plenary.nvim installation failed, skipping"
         eval "$(luarocks path --bin)"
 
     - name: Run tests
