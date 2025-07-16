@@ -93,11 +93,17 @@ jobs:
         ls -la *.out
         echo "Coverage file size: $(wc -c < luacov.report.out) bytes"
         head -10 luacov.report.out
+        
+    - name: Convert coverage to lcov format
+      run: |
+        lua scripts/convert-coverage.lua
+        ls -la lcov.info
+        head -10 lcov.info
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        file: ./luacov.report.out
+        file: ./lcov.info
         flags: lua-${{ matrix.lua-version }}-nvim-${{ matrix.neovim-version }}
         name: lua-${{ matrix.lua-version }}-nvim-${{ matrix.neovim-version }}
         fail_ci_if_error: false
@@ -173,11 +179,17 @@ jobs:
         ls -la *.out
         echo "Coverage file size: $(wc -c < luacov.report.out) bytes"
         head -10 luacov.report.out
+        
+    - name: Convert coverage to lcov format
+      run: |
+        lua scripts/convert-coverage.lua
+        ls -la lcov.info
+        head -10 lcov.info
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        file: ./luacov.report.out
+        file: ./lcov.info
         flags: build
         name: build-coverage
         verbose: true
