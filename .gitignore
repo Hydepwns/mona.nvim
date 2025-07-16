@@ -39,3 +39,17 @@ luac.out
 *.x86_64
 *.hex
 
+# macOS
+.DS_Store
+
+# Coverage reports
+luacov.report.out
+luacov.stats.out
+luacov-html/
+
+# Test artifacts
+test/plenary.nvim/
+
+# Temporary files
+*.tmp
+*.temp
