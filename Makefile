@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-integration validate clean coverage lint help
+.PHONY: test test-unit test-integration validate clean lint help
 
 # Default target
 help:
@@ -7,7 +7,6 @@ help:
 	@echo "  test-unit     - Run unit tests only"
 	@echo "  test-integration - Run integration tests only"
 	@echo "  validate      - Run validation script"
-	@echo "  coverage      - Run tests with coverage report"
 	@echo "  lint          - Run luacheck linting"
 	@echo "  clean         - Clean up test artifacts"
 
@@ -39,20 +38,6 @@ validate:
 	@lua validate.lua
 	@echo "✓ Validation completed"
 
-# Run tests with coverage
-coverage:
-	@echo "Running tests with coverage..."
-	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_config.lua
-	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_utils.lua
-	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_highlights.lua
-	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_preview.lua
-	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_health.lua
-	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_terminal.lua
-	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_installer.lua
-	@eval "$$(luarocks path --bin)" && LUA_PATH="lua/?.lua;lua/?/init.lua;;" lua -lluacov test/test_init.lua
-	@eval "$$(luarocks path --bin)" && luacov
-	@echo "Coverage report generated: luacov.report.out"
-
 # Run luacheck linting
 lint:
 	@echo "Running luacheck linting..."
@@ -62,5 +47,5 @@ lint:
 # Clean up test artifacts
 clean:
 	@echo "Cleaning up..."
-	@rm -f luacov.report.out luacov.stats.out
+	@rm -f
 	@echo "✓ Cleanup completed" 

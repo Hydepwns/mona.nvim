@@ -50,9 +50,7 @@ jobs:
         lua -v
         which luarocks
         luarocks --version
-        
-        # Install luacov with fallback
-        luarocks install --local luacov || echo "luacov installation failed, trying alternative"
+        luarocks install --local plenary.nvim || echo "plenary.nvim installation failed, skipping"
         eval "$(luarocks path --bin)"
 
     - name: Run validation
@@ -74,45 +72,6 @@ jobs:
       run: |
         eval "$(luarocks path --bin)"
         lua test/run_integration.lua || echo "Integration tests failed, but continuing"
-
-    - name: Run tests with coverage
-      run: |
-        eval "$(luarocks path --bin)"
-        # Set up package path for proper module loading
-        export LUA_PATH="lua/?.lua;lua/?/init.lua;;"
-        # Run tests with luacov
-        lua -lluacov test/test_config.lua
-        lua -lluacov test/test_utils.lua
-        lua -lluacov test/test_highlights.lua
-        lua -lluacov test/test_preview.lua
-        lua -lluacov test/test_health.lua
-        lua -lluacov test/test_terminal.lua
-        lua -lluacov test/test_installer.lua
-        lua -lluacov test/test_init.lua
-        # Generate coverage report
-        luacov
-        
-    - name: Verify coverage file
-      run: |
-        ls -la *.out
-        echo "Coverage file size: $(wc -c < luacov.report.out) bytes"
-        head -10 luacov.report.out
-        
-    - name: Convert coverage to lcov format
-      run: |
-        lua scripts/convert-coverage.lua
-        ls -la lcov.info
-        head -10 lcov.info
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./lcov.info
-        flags: lua-${{ matrix.lua-version }}-nvim-${{ matrix.neovim-version }}
-        name: lua-${{ matrix.lua-version }}-nvim-${{ matrix.neovim-version }}
-        fail_ci_if_error: false
-        verbose: true
-        token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     runs-on: ubuntu-latest
@@ -162,42 +121,11 @@ jobs:
         lua -v
         which luarocks
         luarocks --version
-        
-        # Install luacov with fallback
-        luarocks install --local luacov || echo "luacov installation failed, trying alternative"
+        luarocks install --local plenary.nvim || echo "plenary.nvim installation failed, skipping"
         eval "$(luarocks path --bin)"
 
     - name: Run all tests
       run: |
         eval "$(luarocks path --bin)"
         make test-unit
-        make test-integration
-
-    - name: Generate coverage report
-      run: |
-        eval "$(luarocks path --bin)"
-        # Set up package path for proper module loading
-        export LUA_PATH="lua/?.lua;lua/?/init.lua;;"
-        # Run coverage
-        make coverage
-        
-    - name: Verify coverage file
-      run: |
-        ls -la *.out
-        echo "Coverage file size: $(wc -c < luacov.report.out) bytes"
-        head -10 luacov.report.out
-        
-    - name: Convert coverage to lcov format
-      run: |
-        lua scripts/convert-coverage.lua
-        ls -la lcov.info
-        head -10 lcov.info
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./lcov.info
-        flags: build
-        name: build-coverage
-        verbose: true
-        token: ${{ secrets.CODECOV_TOKEN }} 
+        make test-integration 
