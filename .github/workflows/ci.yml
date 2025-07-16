@@ -26,9 +26,10 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Lua ${{ matrix.lua-version }}
-      uses: leafo/gh-actions-lua@v9
-      with:
-        luaVersion: ${{ matrix.lua-version }}
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lua${{ matrix.lua-version }} luarocks
+        echo "Lua ${{ matrix.lua-version }} installed"
 
     - name: Setup Neovim ${{ matrix.neovim-version }}
       run: |
@@ -97,9 +98,10 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Lua 5.4
-      uses: leafo/gh-actions-lua@v9
-      with:
-        luaVersion: 5.4
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lua5.4 luarocks
+        echo "Lua 5.4 installed"
 
     - name: Install luacheck
       run: |
@@ -118,9 +120,10 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Lua 5.4
-      uses: leafo/gh-actions-lua@v9
-      with:
-        luaVersion: 5.4
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lua5.4 luarocks
+        echo "Lua 5.4 installed"
 
     - name: Setup Neovim
       run: |
