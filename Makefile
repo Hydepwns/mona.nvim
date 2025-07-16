@@ -30,7 +30,7 @@ test-unit:
 # Run integration tests
 test-integration:
 	@echo "Running integration tests..."
-	@nvim --headless -u test/minimal_init.lua -c "lua require('plenary.busted').run('test/plugin/integration_spec.lua')"
+	@lua test/run_integration.lua
 	@echo "✓ Integration tests completed"
 
 # Run validation
