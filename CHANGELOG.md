@@ -12,7 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automated releases via GitHub Actions
 - Dependabot integration for dependency updates
 
-## [0.1.0] -
+## [0.1.1] - 2024-06-13
+
+### Added
+- LuaRocks rockspec (`mona-scm-1.rockspec`) for easy installation and distribution.
+
+### Fixed
+- CI workflow now uses the bundled `plenary.nvim` instead of installing via luarocks, ensuring consistent test results between local and CI environments.
+
+## [0.1.0] - 2025-07-16
 
 ### Added
 
