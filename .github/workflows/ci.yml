@@ -47,7 +47,6 @@ jobs:
     - name: Install dependencies
       run: |
         luarocks install --local luacov
-        luarocks install --local plenary.nvim
         eval "$(luarocks path --bin)"
 
     - name: Run validation
@@ -133,7 +132,6 @@ jobs:
     - name: Install dependencies
       run: |
         luarocks install --local luacov
-        luarocks install --local plenary.nvim
         eval "$(luarocks path --bin)"
 
     - name: Run all tests
