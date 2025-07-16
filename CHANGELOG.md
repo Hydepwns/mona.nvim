@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automated releases via GitHub Actions
 - Dependabot integration for dependency updates
 
-## [0.1.1] - 2024-06-13
+## [0.1.1] - 2025-07-16
 
 ### Added
 
@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - CI workflow now uses the bundled `plenary.nvim` instead of installing via luarocks, ensuring consistent test results between local and CI environments.
+- Fixed GitHub Actions CI failures by adding Lua development headers (`lua*-dev` packages)
+- Added debug output and fallback handling for luarocks installation issues
+- Resolved "Failed finding Lua header files" error in CI pipeline
 
 ## [0.1.0] - 2025-07-16
 

@@ -1,10 +1,10 @@
 package = "mona.nvim"
-version = "0.1.0-1"
+version = "0.1.1-1"
 rockspec_format = "3.0"
 
 source = {
   url = "git+https://github.com/hydepwns/mona.nvim",
-  tag = "v0.1.0"
+  tag = "v0.1.1"
 }
 
 description = {
