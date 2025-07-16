@@ -1,25 +1,45 @@
 # mona.nvim
 
 [![CI](https://github.com/hydepwns/mona.nvim/workflows/CI/badge.svg)](https://github.com/hydepwns/mona.nvim/actions)
+[![LuaRocks](https://img.shields.io/luarocks/v/hydepwns/mona.nvim?color=blue)](https://luarocks.org/modules/hydepwns/mona.nvim)
 
-Enhanced monospaced font management and configuration for Neovim.
+Enhanced Monaspace font management for Neovim with automated installation, preview, and terminal config generation.
 
->Monaspace is a next-generation font family from GitHub Next, designed for code: ligatures, texture healing, and beautiful style mixing. [Learn more](https://github.com/githubnext/monaspace)
+> Monaspace is a next-generation font family from GitHub Next, designed for code with ligatures, texture healing, and beautiful style mixing. [Learn more](https://github.com/githubnext/monaspace)
 
-**💡 tldr; Want to see the fonts side by side?** Visit [monaspace.githubnext.com](https://monaspace.githubnext.com/) for an interactive font preview!
+**💡 Preview fonts:** [monaspace.githubnext.com](https://monaspace.githubnext.com/)  
+**📦 Install:** `luarocks install mona.nvim`
+
+## Quick Start
+
+```bash
+# Install plugin
+luarocks install mona.nvim
+
+# In Neovim
+:MonaInstall variable all  # Install fonts
+:MonaPreview              # Preview fonts
+:MonaStatus               # Check status
+```
 
 ## Features
 
-- **Automated Font Installation**: Install Monaspace fonts directly from Neovim
-- **Font Feature Configuration**: Control texture healing, ligatures, and character variants
-- **Terminal Configuration Generator**: Generate configs for Alacritty, Kitty, WezTerm, and Ghostty
-- **Font Preview System**: Preview different font combinations
-- **Health Check System**: Diagnose installation and configuration issues
-- **Cross-platform Support**: Works on macOS, Linux, and Windows
+- **Automated Font Installation** - Install Monaspace fonts directly from Neovim
+- **Font Preview System** - Preview different font combinations side-by-side
+- **Terminal Config Generator** - Generate configs for Alacritty, Kitty, WezTerm, Ghostty
+- **Font Feature Control** - Texture healing, ligatures, character variants
+- **Health Check System** - Diagnose installation and configuration issues
+- **Cross-platform** - macOS, Linux, Windows
 
 ## Installation
 
-### Using lazy.nvim
+### LuaRocks
+
+```bash
+luarocks install mona.nvim
+```
+
+### lazy.nvim
 
 ```lua
 {
@@ -42,7 +62,7 @@ Enhanced monospaced font management and configuration for Neovim.
 }
 ```
 
-### Using packer
+### packer
 
 ```lua
 use {
@@ -54,36 +74,27 @@ use {
 }
 ```
 
-## Quick Start
-
-1. **Install plugin** using your preferred package manager
-2. **Install fonts**: `:MonaInstall variable all`
-3. **Check status**: `:MonaStatus`
-4. **Preview fonts**: `:MonaPreview`
-5. **Generate config**: `:MonaExportConfig alacritty ~/.config/alacritty/fonts.toml`
-
 ## Commands
 
-### Font Management
-
-- `:MonaInstall [type] [families]` - Install fonts (`type`: otf/variable/frozen, `families`: all or neon,argon,xenon)
-- `:MonaUpdate` - Update fonts to latest version
-- `:MonaUninstall [families]` - Remove fonts
-- `:MonaStatus` - Show installation status
-
-### Configuration
-
-- `:MonaPreview` - Show font preview window
-- `:MonaExportConfig <terminal> [filepath]` - Generate terminal config (alacritty/kitty/wezterm/ghostty)
-- `:MonaLoad` - Load default font style mappings
-- `:MonaHealth` - Run health check diagnostics
+| Command | Description |
+|---------|-------------|
+| `:MonaInstall [type] [families]` | Install fonts (`type`: otf/variable/frozen, `families`: all or neon,argon,xenon) |
+| `:MonaUpdate` | Update fonts to latest version |
+| `:MonaUninstall [families]` | Remove fonts |
+| `:MonaStatus` | Show installation status |
+| `:MonaPreview` | Show font preview window |
+| `:MonaExportConfig <terminal> [filepath]` | Generate terminal config (alacritty/kitty/wezterm/ghostty) |
+| `:MonaLoad` | Load default font style mappings |
+| `:MonaHealth` | Run health check diagnostics |
 
 ## Key Mappings
 
-- `<leader>mf` - Open font preview (`:MonaPreview`)
+- `<leader>mf` - Font preview (`:MonaPreview`)
 - `<leader>mi` - Install fonts (`:MonaInstall`)
 - `<leader>ms` - Show status (`:MonaStatus`)
 - `<leader>mh` - Health check (`:MonaHealth`)
+
+## Configuration
 
 ### Font Features
 
@@ -157,44 +168,13 @@ require("mona").setup({
 
 ## Font Families
 
-- **Neon** - Monospace (default)
-- **Argon** - Monospace with rounded corners
-- **Xenon** - Slab serif
-- **Radon** - Handwritten style
-- **Krypton** - Display style
-
-**🎨 See all fonts in action:** [monaspace.githubnext.com](https://monaspace.githubnext.com/)
-
-## CI/CD
-
-This project uses GitHub Actions for continuous integration:
-
-- **Multi-version testing**: Lua 5.1-5.4 and Neovim 0.9.0, 0.10.0, nightly
-- **Linting**: Automated code quality checks with luacheck
-- **Automated releases**: Tag-based releases with changelog generation
-
-## Testing
-
-```bash
-# Quick Validation
-lua validate.lua
-
-# Optional entrypoints
-# Unit tests
-lua test/test_config.lua
-lua test/test_utils.lua
-lua test/test_highlights.lua
-# Integration tests
-nvim --headless -u test/minimal_init.lua -c "lua require('plenary.busted').run('test/plugin')"
-# Run all tests
-make test
-# Individual test types
-make test-unit          # Unit tests only
-make test-integration   # Integration tests only
-make validate           # Validation script
-
-make clean              # Clean test artifacts
-```
+| Family | Style | Use Case |
+|--------|-------|----------|
+| **Neon** | Monospace | Default coding |
+| **Argon** | Monospace (rounded) | Softer appearance |
+| **Xenon** | Slab serif | Bold emphasis |
+| **Radon** | Handwritten | Italic emphasis |
+| **Krypton** | Display | Headers/titles |
 
 ## Troubleshooting
 
@@ -203,15 +183,31 @@ make clean              # Clean test artifacts
 Run `:MonaHealth` or `lua validate.lua` to diagnose:
 
 - Font installation status
-- Terminal compatibility
+- Terminal compatibility  
 - Required tools availability
 - Configuration validation
 
 ### Common Issues
 
-1. **Fonts not showing**: Run `:MonaInstall`
-2. **Terminal not supported**: Check `:MonaHealth`
-3. **Font features not working**: Ensure GUI Neovim for full support
+1. **Fonts not showing** → Run `:MonaInstall`
+2. **Terminal not supported** → Check `:MonaHealth`
+3. **Font features not working** → Ensure GUI Neovim
+
+## Development
+
+```bash
+# Quick validation
+lua validate.lua
+
+# Run tests
+make test
+
+# Individual test types
+make test-unit          # Unit tests
+make test-integration   # Integration tests
+make validate           # Validation script
+make clean              # Clean artifacts
+```
 
 ## License
 
