@@ -25,16 +25,22 @@ luarocks install mona.nvim
 
 ## Features
 
-- **Automated Font Installation** - Install Monaspace fonts directly from Neovim
-- **Async Operations** - Non-blocking font installation with progress reporting
-- **Font Preview System** - Preview different font combinations side-by-side
-- **Terminal Config Generator** - Generate configs for Alacritty, Kitty, WezTerm, Ghostty
-- **Terminal Detection** - Automatically detect terminal capabilities
-- **Font Feature Control** - Texture healing, ligatures, character variants
-- **Cache Management** - Fast operations with persistent caching
-- **Health Check System** - Diagnose installation and configuration issues
-- **Smart Retry Logic** - Automatic retry with exponential backoff for network operations
-- **Cross-platform** - macOS, Linux, Windows
+| Feature | Badge | Description |
+|---------|-------|-------------|
+| **Font Installation** | 🚀 | Automated font installation directly from Neovim |
+| **Async Operations** | ⚡ | Non-blocking operations with progress reporting |
+| **Font Preview** | 👁️ | Preview different font combinations side-by-side |
+| **Terminal Configs** | ⚙️ | Generate configs for Alacritty, Kitty, WezTerm, Ghostty |
+| **Terminal Detection** | 🔍 | Automatically detect terminal capabilities |
+| **Font Features** | 🎨 | Texture healing, ligatures, character variants |
+| **Cache Management** | 💾 | Fast operations with persistent caching |
+| **Health Checks** | 🏥 | Diagnose installation and configuration issues |
+| **Retry Logic** | 🔄 | Automatic retry with exponential backoff |
+| **Cross-platform** | 🌐 | macOS, Linux, Windows support |
+| **LuaRocks** | 📦 | Easy installation via LuaRocks |
+| **CI/CD** | 🔧 | Automated testing and releases |
+| **Code Quality** | ✨ | Stylua formatting, luacheck linting |
+| **Documentation** | 📚 | Comprehensive docs and examples |
 
 ## Installation
 
@@ -224,7 +230,7 @@ Automatically detect your terminal and its capabilities:
 
 ### Health Check
 
-Run `:MonaHealth` or `lua validate.lua` to diagnose:
+Run `:MonaHealth` or `lua scripts/validate.lua` to diagnose:
 
 - Font installation status
 - Terminal compatibility  
@@ -241,7 +247,7 @@ Run `:MonaHealth` or `lua validate.lua` to diagnose:
 
 ```bash
 # Quick validation
-lua validate.lua
+lua scripts/validate.lua
 
 # Run tests
 make test
