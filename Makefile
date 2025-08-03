@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-integration validate clean lint help
+.PHONY: test test-unit test-integration validate clean lint format format-check help
 
 # Default target
 help:
@@ -8,6 +8,8 @@ help:
 	@echo "  test-integration - Run integration tests only"
 	@echo "  validate      - Run validation script"
 	@echo "  lint          - Run luacheck linting"
+	@echo "  format        - Format code with stylua"
+	@echo "  format-check  - Check code formatting"
 	@echo "  clean         - Clean up test artifacts"
 
 # Run all tests
@@ -43,6 +45,18 @@ lint:
 	@echo "Running luacheck linting..."
 	@luacheck lua/ test/ validate.lua --exclude-files test/plenary.nvim --no-max-line-length
 	@echo "✓ Linting completed"
+
+# Format code with stylua
+format:
+	@echo "Formatting code with stylua..."
+	@stylua lua/ plugin/ test/ validate.lua
+	@echo "✓ Code formatting completed"
+
+# Check code formatting
+format-check:
+	@echo "Checking code formatting..."
+	@stylua --check lua/ plugin/ test/ validate.lua
+	@echo "✓ Code formatting check completed"
 
 # Clean up test artifacts
 clean:

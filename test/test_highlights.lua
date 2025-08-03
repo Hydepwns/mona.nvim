@@ -25,7 +25,7 @@ local function test_apply_styles()
   highlights.apply_styles({
     bold = { Comment = true },
     italic = { Todo = true },
-    bold_italic = { Error = true }
+    bold_italic = { Error = true },
   })
   assert(#set_hl_calls > 0, "nvim_set_hl should be called")
   print("✓ apply_styles tested")
@@ -57,4 +57,4 @@ test_apply_styles()
 test_apply_style_to_group()
 test_load()
 test_clear()
-print("All highlights tests passed!") 
+print("All highlights tests passed!")

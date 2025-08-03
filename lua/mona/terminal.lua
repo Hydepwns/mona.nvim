@@ -4,26 +4,39 @@ local cache = require("mona.cache")
 
 M.configs = {
   alacritty = function(font_map)
-    return string.format([[
+    return string.format(
+      [[
 [font]
 normal = { family = "Monaspace %s" }
 bold = { family = "Monaspace %s" }
 italic = { family = "Monaspace %s" }
 bold_italic = { family = "Monaspace %s" }
-]], font_map.normal, font_map.bold, font_map.italic, font_map.bold_italic)
+]],
+      font_map.normal,
+      font_map.bold,
+      font_map.italic,
+      font_map.bold_italic
+    )
   end,
-  
+
   kitty = function(font_map)
-    return string.format([[
+    return string.format(
+      [[
 font_family      Monaspace %s Var
 bold_font        Monaspace %s Var
 italic_font      Monaspace %s Var
 bold_italic_font Monaspace %s Var
-]], font_map.normal, font_map.bold, font_map.italic, font_map.bold_italic)
+]],
+      font_map.normal,
+      font_map.bold,
+      font_map.italic,
+      font_map.bold_italic
+    )
   end,
-  
+
   wezterm = function(font_map)
-    return string.format([[
+    return string.format(
+      [[
 return {
   font = wezterm.font_with_fallback({
     { family = "Monaspace %s" },
@@ -44,27 +57,39 @@ return {
     },
   },
 }
-]], font_map.normal, font_map.bold, font_map.italic, font_map.bold_italic)
+]],
+      font_map.normal,
+      font_map.bold,
+      font_map.italic,
+      font_map.bold_italic
+    )
   end,
-  
+
   ghostty = function(font_map)
-    return string.format([[
+    return string.format(
+      [[
 font-family = "Monaspace %s"
 font-family-bold = "Monaspace %s"
 font-family-italic = "Monaspace %s"
 font-family-bold-italic = "Monaspace %s"
-]], font_map.normal, font_map.bold, font_map.italic, font_map.bold_italic)
-  end
+]],
+      font_map.normal,
+      font_map.bold,
+      font_map.italic,
+      font_map.bold_italic
+    )
+  end,
 }
 
 M.generate = function(terminal, font_map)
-  font_map = font_map or {
-    normal = "Neon",
-    bold = "Xenon",
-    italic = "Radon",
-    bold_italic = "Krypton"
-  }
-  
+  font_map = font_map
+    or {
+      normal = "Neon",
+      bold = "Xenon",
+      italic = "Radon",
+      bold_italic = "Krypton",
+    }
+
   if M.configs[terminal] then
     return M.configs[terminal](font_map)
   else
@@ -88,14 +113,14 @@ M.get_default_paths = function()
     alacritty = home .. "/.config/alacritty/alacritty.toml",
     kitty = home .. "/.config/kitty/kitty.conf",
     wezterm = home .. "/.config/wezterm/wezterm.lua",
-    ghostty = home .. "/.config/ghostty/config"
+    ghostty = home .. "/.config/ghostty/config",
   }
 end
 
 -- Detect current terminal
 M.detect = function(use_cache)
   use_cache = use_cache ~= false -- default to using cache
-  
+
   -- Try to get from cache first
   if use_cache then
     local cached_terminal = cache.get(cache.keys.terminal_type())
@@ -103,7 +128,7 @@ M.detect = function(use_cache)
       return cached_terminal
     end
   end
-  
+
   local terminal_checks = {
     -- Check environment variables first
     { env = "TERM_PROGRAM", value = "ghostty", name = "ghostty" },
@@ -117,7 +142,7 @@ M.detect = function(use_cache)
     { env = "XTERM_VERSION", value = nil, name = "xterm" },
     { env = "TMUX", value = nil, name = "tmux" },
   }
-  
+
   -- Check environment variables
   for _, check in ipairs(terminal_checks) do
     local env_value = vim.env[check.env]
@@ -129,17 +154,17 @@ M.detect = function(use_cache)
       end
     end
   end
-  
+
   -- Fallback to process detection on Unix-like systems
   if utils.get_os() ~= "Windows" then
     local ppid = vim.fn.getpid()
     local ps_cmd = string.format("ps -p %d -o ppid=", ppid)
     local parent_pid = vim.fn.system(ps_cmd):gsub("%s+", "")
-    
+
     if parent_pid ~= "" then
       local parent_cmd = string.format("ps -p %s -o comm=", parent_pid)
       local parent_process = vim.fn.system(parent_cmd):gsub("%s+", ""):lower()
-      
+
       -- Map process names to terminal types
       local process_map = {
         alacritty = "alacritty",
@@ -152,7 +177,7 @@ M.detect = function(use_cache)
         konsole = "konsole",
         xterm = "xterm",
       }
-      
+
       for process, terminal in pairs(process_map) do
         if parent_process:match(process) then
           -- Cache the detected terminal
@@ -162,7 +187,7 @@ M.detect = function(use_cache)
       end
     end
   end
-  
+
   -- Cache unknown result
   cache.set(cache.keys.terminal_type(), "unknown", 300) -- 5 minute TTL
   return "unknown"
@@ -171,7 +196,7 @@ end
 -- Get terminal capabilities
 M.capabilities = function(terminal)
   terminal = terminal or M.detect()
-  
+
   local capabilities_map = {
     alacritty = { font_mixing = true, ligatures = true, variable_fonts = true },
     kitty = { font_mixing = true, ligatures = true, variable_fonts = true },
@@ -184,12 +209,13 @@ M.capabilities = function(terminal)
     vscode = { font_mixing = false, ligatures = true, variable_fonts = true },
     tmux = { font_mixing = false, ligatures = false, variable_fonts = false },
   }
-  
-  return capabilities_map[terminal] or {
-    font_mixing = false,
-    ligatures = false,
-    variable_fonts = false
-  }
+
+  return capabilities_map[terminal]
+    or {
+      font_mixing = false,
+      ligatures = false,
+      variable_fonts = false,
+    }
 end
 
 -- Auto-generate configs for configured terminals
@@ -198,9 +224,9 @@ M.auto_generate = function()
   if not config.terminal_config.auto_generate then
     return
   end
-  
+
   local paths = M.get_default_paths()
-  
+
   for _, terminal in ipairs(config.terminal_config.terminals) do
     local path = paths[terminal]
     if path then
@@ -210,4 +236,4 @@ M.auto_generate = function()
   end
 end
 
-return M 
+return M

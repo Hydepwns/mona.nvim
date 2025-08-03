@@ -10,7 +10,7 @@ package.path = package.path .. ";lua/?.lua;lua/?/init.lua"
 vim = {
   tbl_deep_extend = function(mode, ...)
     local result = {}
-    for i = 1, select('#', ...) do
+    for i = 1, select("#", ...) do
       local t = select(i, ...)
       if type(t) == "table" then
         for k, v in pairs(t) do
@@ -26,8 +26,8 @@ vim = {
     levels = {
       INFO = 1,
       WARN = 2,
-      ERROR = 3
-    }
+      ERROR = 3,
+    },
   },
   notify = function(msg, level)
     print(string.format("[%s] %s", level == 1 and "INFO" or level == 2 and "WARN" or "ERROR", msg))
@@ -35,15 +35,15 @@ vim = {
   fn = {
     has = function(feature)
       return feature == "gui_running" and 0 or 0
-    end
+    end,
   },
   loop = {
     os_uname = function()
       return { sysname = "Linux" }
-    end
+    end,
   },
   o = {
-    guifont = "MonaspaceNeon:h12"
+    guifont = "MonaspaceNeon:h12",
   },
   cmd = function(cmd)
     print("[vim.cmd] " .. cmd)
@@ -52,9 +52,9 @@ vim = {
     runtimepath = {
       append = function(path)
         print("[runtimepath] append: " .. path)
-      end
-    }
-  }
+      end,
+    },
+  },
 }
 
 print("Starting coverage collection...")
@@ -68,20 +68,20 @@ print("Loading and testing mona.nvim modules...")
 -- Load and exercise all modules
 local modules = {
   "mona.config",
-  "mona.utils", 
+  "mona.utils",
   "mona.highlights",
   "mona.preview",
   "mona.health",
   "mona.terminal",
   "mona.installer",
-  "mona.init"
+  "mona.init",
 }
 
 for _, module_name in ipairs(modules) do
   print("Loading " .. module_name .. "...")
   local module = require(module_name)
   print("✓ " .. module_name .. " loaded successfully")
-  
+
   -- Exercise basic functionality if available
   if module.setup then
     print("  - Testing setup function...")
@@ -92,7 +92,7 @@ for _, module_name in ipairs(modules) do
       print("  ⚠ setup function failed: " .. tostring(err))
     end
   end
-  
+
   if module.load then
     print("  - Testing load function...")
     local success, err = pcall(module.load)
@@ -107,4 +107,4 @@ end
 print("Stopping coverage collection...")
 luacov.stop()
 
-print("Coverage test completed!") 
+print("Coverage test completed!")

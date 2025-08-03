@@ -95,6 +95,22 @@ jobs:
         eval "$(luarocks path --bin)" || true
         luacheck lua/ test/ validate.lua --exclude-files test/plenary.nvim --no-max-line-length || echo "Linting completed with warnings"
 
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install stylua
+      run: |
+        curl -sL https://github.com/JohnnyMorganz/stylua/releases/latest/download/stylua-linux.zip | funzip > stylua
+        chmod +x stylua
+        sudo mv stylua /usr/local/bin/
+
+    - name: Check code formatting
+      run: |
+        stylua --check lua/ plugin/ test/ validate.lua
+
   build:
     runs-on: ubuntu-latest
     steps:

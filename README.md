@@ -250,8 +250,25 @@ make test
 make test-unit          # Unit tests
 make test-integration   # Integration tests
 make validate           # Validation script
+make lint               # Run luacheck linting
+make format             # Format code with stylua
+make format-check       # Check code formatting
 make clean              # Clean artifacts
 ```
+
+### Code Formatting
+
+This project uses [stylua](https://github.com/JohnnyMorganz/stylua) for consistent code formatting:
+
+```bash
+# Format all Lua files
+make format
+
+# Check formatting without making changes
+make format-check
+```
+
+The formatting configuration is in `stylua.toml`.
 
 ## License
 

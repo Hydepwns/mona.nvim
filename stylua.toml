@@ -1,0 +1,21 @@
+# stylua configuration for mona.nvim
+# Opinionated Lua code formatter
+
+# Line width
+column_width = 100
+
+# Indent style
+indent_type = "Spaces"
+indent_width = 2
+
+# Quote style
+quote_style = "AutoPreferDouble"
+
+# Call parentheses
+call_parentheses = "Always"
+
+# Collapse simple statements
+collapse_simple_statement = "Never"
+
+# Line endings
+line_endings = "Unix" 

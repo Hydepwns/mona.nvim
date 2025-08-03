@@ -18,7 +18,7 @@ M.default_style_map = {
 -- Apply style mappings to highlight groups
 M.apply_styles = function(style_map)
   style_map = style_map or M.default_style_map
-  
+
   for style, groups in pairs(style_map) do
     for group, enabled in pairs(groups) do
       if enabled then
@@ -31,7 +31,7 @@ end
 -- Apply a specific style to a highlight group
 M.apply_style_to_group = function(group, style)
   local hl_group = vim.api.nvim_get_hl(0, { name = group })
-  
+
   if style == "bold" then
     hl_group.bold = true
   elseif style == "italic" then
@@ -40,7 +40,7 @@ M.apply_style_to_group = function(group, style)
     hl_group.bold = true
     hl_group.italic = true
   end
-  
+
   vim.api.nvim_set_hl(0, group, hl_group)
 end
 
@@ -55,4 +55,4 @@ M.clear = function()
   vim.cmd("highlight clear")
 end
 
-return M 
+return M

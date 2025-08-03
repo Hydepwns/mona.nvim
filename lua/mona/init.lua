@@ -46,4 +46,4 @@ M.health_check = function()
   health.check()
 end
 
-return M 
+return M

@@ -5,14 +5,30 @@ package.path = package.path .. ";lua/?.lua;lua/?/init.lua"
 -- Mock Neovim API for testing
 vim = vim or {}
 vim.log = vim.log or { levels = { INFO = 1, WARN = 2, ERROR = 3 } }
-vim.notify = vim.notify or function(msg, level) print(string.format("[NOTIFY %s] %s", level, msg)) end
-vim.fn = vim.fn or {
-  writefile = function(lines, path) return true end,
-  mkdir = function(path, p) return true end,
-  delete = function(path, rf) return true end,
-  has = function(feature) return 0 end
+vim.notify = vim.notify
+  or function(msg, level)
+    print(string.format("[NOTIFY %s] %s", level, msg))
+  end
+vim.fn = vim.fn
+  or {
+    writefile = function(lines, path)
+      return true
+    end,
+    mkdir = function(path, p)
+      return true
+    end,
+    delete = function(path, rf)
+      return true
+    end,
+    has = function(feature)
+      return 0
+    end,
+  }
+vim.loop = vim.loop or {
+  os_uname = function()
+    return { sysname = "Linux" }
+  end,
 }
-vim.loop = vim.loop or { os_uname = function() return { sysname = "Linux" } end }
 
 local utils = require("mona.utils")
 
@@ -26,7 +42,9 @@ end
 
 local function test_error()
   print("Testing error...")
-  local ok, err = pcall(function() utils.error("Test error") end)
+  local ok, err = pcall(function()
+    utils.error("Test error")
+  end)
   assert(not ok and err:match("%[mona%.nvim%]"), "Error should include plugin prefix")
   print("✓ error tested")
 end
@@ -34,7 +52,9 @@ end
 local function test_validate_table()
   print("Testing validate_table...")
   utils.validate_table({}, "tbl")
-  local ok = pcall(function() utils.validate_table(123, "tbl") end)
+  local ok = pcall(function()
+    utils.validate_table(123, "tbl")
+  end)
   assert(not ok, "Should error on non-table")
   print("✓ validate_table tested")
 end
@@ -42,7 +62,9 @@ end
 local function test_validate_boolean()
   print("Testing validate_boolean...")
   utils.validate_boolean(true, "bool")
-  local ok = pcall(function() utils.validate_boolean("no", "bool") end)
+  local ok = pcall(function()
+    utils.validate_boolean("no", "bool")
+  end)
   assert(not ok, "Should error on non-boolean")
   print("✓ validate_boolean tested")
 end
@@ -50,7 +72,9 @@ end
 local function test_validate_string()
   print("Testing validate_string...")
   utils.validate_string("hi", "str")
-  local ok = pcall(function() utils.validate_string(123, "str") end)
+  local ok = pcall(function()
+    utils.validate_string(123, "str")
+  end)
   assert(not ok, "Should error on non-string")
   print("✓ validate_string tested")
 end
@@ -58,19 +82,27 @@ end
 local function test_validate_number()
   print("Testing validate_number...")
   utils.validate_number(5, "num", 1, 10)
-  local ok = pcall(function() utils.validate_number("no", "num") end)
+  local ok = pcall(function()
+    utils.validate_number("no", "num")
+  end)
   assert(not ok, "Should error on non-number")
-  ok = pcall(function() utils.validate_number(0, "num", 1, 10) end)
+  ok = pcall(function()
+    utils.validate_number(0, "num", 1, 10)
+  end)
   assert(not ok, "Should error on min")
-  ok = pcall(function() utils.validate_number(11, "num", 1, 10) end)
+  ok = pcall(function()
+    utils.validate_number(11, "num", 1, 10)
+  end)
   assert(not ok, "Should error on max")
   print("✓ validate_number tested")
 end
 
 local function test_validate_enum()
   print("Testing validate_enum...")
-  utils.validate_enum("a", "enum", {"a", "b"})
-  local ok = pcall(function() utils.validate_enum("c", "enum", {"a", "b"}) end)
+  utils.validate_enum("a", "enum", { "a", "b" })
+  local ok = pcall(function()
+    utils.validate_enum("c", "enum", { "a", "b" })
+  end)
   assert(not ok, "Should error on invalid enum")
   print("✓ validate_enum tested")
 end
@@ -130,4 +162,4 @@ test_safe_delete()
 test_get_os()
 test_is_gui()
 test_format_font_family()
-print("All utils tests passed!") 
+print("All utils tests passed!")

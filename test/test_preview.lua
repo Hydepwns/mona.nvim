@@ -34,11 +34,11 @@ vim = {
     end,
     nvim_buf_delete = function(buf, opts)
       -- Mock implementation
-    end
+    end,
   },
   o = {
     lines = 24,
-    columns = 80
+    columns = 80,
   },
   split = function(str, sep, plain)
     local result = {}
@@ -52,12 +52,12 @@ vim = {
     levels = {
       INFO = 1,
       WARN = 2,
-      ERROR = 3
-    }
+      ERROR = 3,
+    },
   },
   notify = function(msg, level)
     print(string.format("[%s] %s", level == 1 and "INFO" or level == 2 and "WARN" or "ERROR", msg))
-  end
+  end,
 }
 
 -- Add current directory to package path for testing
@@ -71,86 +71,89 @@ package.loaded["mona.config"] = {
       window_opts = {
         width = 80,
         height = 20,
-        border = "rounded"
-      }
-    }
-  }
+        border = "rounded",
+      },
+    },
+  },
 }
 
 local function test_preview_module()
   print("Testing preview module...")
-  
+
   local preview = require("mona.preview")
-  
+
   -- Test module structure
   assert(preview.preview_buffer == nil, "preview_buffer should be nil initially")
   assert(preview.preview_window == nil, "preview_window should be nil initially")
   assert(type(preview.show) == "function", "show function should exist")
   assert(type(preview.close) == "function", "close function should exist")
-  assert(type(preview.apply_preview_highlights) == "function", "apply_preview_highlights function should exist")
+  assert(
+    type(preview.apply_preview_highlights) == "function",
+    "apply_preview_highlights function should exist"
+  )
   assert(type(preview.cycle_fonts) == "function", "cycle_fonts function should exist")
-  
+
   print("✓ Preview module structure tests passed!")
 end
 
 local function test_preview_show()
   print("Testing preview show functionality...")
-  
+
   local preview = require("mona.preview")
-  
+
   -- Test show function
   local success, err = pcall(preview.show)
   assert(success, "show function should not error: " .. tostring(err))
-  
+
   -- Test that preview window and buffer are set
   assert(preview.preview_window ~= nil, "preview_window should be set after show")
   assert(preview.preview_buffer ~= nil, "preview_buffer should be set after show")
-  
+
   print("✓ Preview show functionality tests passed!")
 end
 
 local function test_preview_close()
   print("Testing preview close functionality...")
-  
+
   local preview = require("mona.preview")
-  
+
   -- First show preview
   preview.show()
-  
+
   -- Test close function
   local success, err = pcall(preview.close)
   assert(success, "close function should not error: " .. tostring(err))
-  
+
   -- Test that preview window and buffer are cleared
   assert(preview.preview_window == nil, "preview_window should be nil after close")
   assert(preview.preview_buffer == nil, "preview_buffer should be nil after close")
-  
+
   print("✓ Preview close functionality tests passed!")
 end
 
 local function test_preview_highlights()
   print("Testing preview highlights functionality...")
-  
+
   local preview = require("mona.preview")
-  
+
   -- Test apply_preview_highlights function
   local success, err = pcall(preview.apply_preview_highlights)
   assert(success, "apply_preview_highlights should not error: " .. tostring(err))
-  
+
   print("✓ Preview highlights functionality tests passed!")
 end
 
 local function test_preview_cycle_fonts()
   print("Testing preview cycle fonts functionality...")
-  
+
   local preview = require("mona.preview")
-  
+
   -- Test cycle_fonts function
   local success, err = pcall(function()
     preview.cycle_fonts("bold")
   end)
   assert(success, "cycle_fonts should not error: " .. tostring(err))
-  
+
   print("✓ Preview cycle fonts functionality tests passed!")
 end
 
@@ -165,4 +168,4 @@ test_preview_highlights()
 test_preview_cycle_fonts()
 
 print("=" .. string.rep("=", 50))
-print("All preview tests passed!") 
+print("All preview tests passed!")

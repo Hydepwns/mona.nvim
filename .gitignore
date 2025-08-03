@@ -55,6 +55,9 @@ mona_nvim_cache.json
 .mona_nvim_cache.json
 cache/
 
+# Development tools
+stylua
+
 # Temporary files
 *.tmp
 *.temp

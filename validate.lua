@@ -7,7 +7,7 @@ print("=" .. string.rep("=", 50))
 -- Check if required files exist
 local files = {
   "lua/mona/init.lua",
-  "lua/mona/config.lua", 
+  "lua/mona/config.lua",
   "lua/mona/installer.lua",
   "lua/mona/terminal.lua",
   "lua/mona/preview.lua",
@@ -16,7 +16,7 @@ local files = {
   "lua/mona/utils.lua",
   "plugin/mona.lua",
   "README.md",
-  "LICENSE"
+  "LICENSE",
 }
 
 print("Checking required files...")
@@ -34,8 +34,8 @@ end
 print("\nChecking directory structure...")
 local dirs = {
   "lua/mona",
-  "plugin", 
-  "test"
+  "plugin",
+  "test",
 }
 
 for _, dir in ipairs(dirs) do
@@ -53,13 +53,13 @@ print("\nChecking Lua file syntax...")
 local lua_files = {
   "lua/mona/init.lua",
   "lua/mona/config.lua",
-  "lua/mona/installer.lua", 
+  "lua/mona/installer.lua",
   "lua/mona/terminal.lua",
   "lua/mona/preview.lua",
   "lua/mona/health.lua",
   "lua/mona/highlights.lua",
   "lua/mona/utils.lua",
-  "plugin/mona.lua"
+  "plugin/mona.lua",
 }
 
 for _, file in ipairs(lua_files) do
@@ -67,7 +67,7 @@ for _, file in ipairs(lua_files) do
   if f then
     local content = f:read("*all")
     f:close()
-    
+
     -- Basic syntax check (very simple)
     if content:match("local M = {}") and content:match("return M") then
       print("✓ " .. file .. " (basic syntax OK)")
@@ -85,7 +85,7 @@ local f = io.open("README.md", "r")
 if f then
   local content = f:read("*all")
   f:close()
-  
+
   local checks = {
     { "mona.nvim", "Plugin name" },
     { "## Features", "Features section" },
@@ -93,9 +93,9 @@ if f then
     { "## Commands", "Commands section" },
     { ":MonaInstall", "Install command" },
     { ":MonaPreview", "Preview command" },
-    { ":MonaHealth", "Health command" }
+    { ":MonaHealth", "Health command" },
   }
-  
+
   for _, check in ipairs(checks) do
     if content:find(check[1]) then
       print("✓ " .. check[2])
@@ -112,5 +112,5 @@ print("Validation complete!")
 print("\nPlugin structure appears to be correct.")
 print("To test with Neovim, install the plugin and run:")
 print("  :MonaHealth")
-print("  :MonaStatus") 
-print("  :MonaPreview") 
+print("  :MonaStatus")
+print("  :MonaPreview")

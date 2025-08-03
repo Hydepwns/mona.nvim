@@ -53,7 +53,7 @@ M.validate_table = function(value, name, required_keys)
   if type(value) ~= "table" then
     M.error(string.format("%s must be a table, got %s", name, type(value)))
   end
-  
+
   if required_keys then
     for _, key in ipairs(required_keys) do
       if value[key] == nil then
@@ -82,11 +82,11 @@ M.validate_number = function(value, name, min, max)
   if type(value) ~= "number" then
     M.error(string.format("%s must be number, got %s", name, type(value)))
   end
-  
+
   if min and value < min then
     M.error(string.format("%s must be >= %d, got %d", name, min, value))
   end
-  
+
   if max and value > max then
     M.error(string.format("%s must be <= %d, got %d", name, max, value))
   end
@@ -99,8 +99,14 @@ M.validate_enum = function(value, name, allowed_values)
       return
     end
   end
-  M.error(string.format("%s must be one of {%s}, got %s", 
-    name, table.concat(allowed_values, ", "), tostring(value)))
+  M.error(
+    string.format(
+      "%s must be one of {%s}, got %s",
+      name,
+      table.concat(allowed_values, ", "),
+      tostring(value)
+    )
+  )
 end
 
 -- Safe file operations
@@ -109,7 +115,7 @@ M.safe_write_file = function(filepath, content, critical)
   local success, err = pcall(function()
     vim.fn.writefile(vim.split(content, "\n"), vim.fn.expand(filepath))
   end)
-  
+
   if not success then
     local msg = string.format("Failed to write file %s: %s", filepath, err)
     if critical then
@@ -118,7 +124,7 @@ M.safe_write_file = function(filepath, content, critical)
       M.notify_error(msg)
     end
   end
-  
+
   return success
 end
 
@@ -128,7 +134,7 @@ M.safe_mkdir = function(dirpath, critical)
   local success, err = pcall(function()
     vim.fn.mkdir(dirpath, "p")
   end)
-  
+
   if not success then
     local msg = string.format("Failed to create directory %s: %s", dirpath, err)
     if critical then
@@ -137,7 +143,7 @@ M.safe_mkdir = function(dirpath, critical)
       M.notify_error(msg)
     end
   end
-  
+
   return success
 end
 
@@ -147,7 +153,7 @@ M.safe_delete = function(filepath, critical)
   local success, err = pcall(function()
     vim.fn.delete(filepath, "rf")
   end)
-  
+
   if not success then
     local msg = string.format("Failed to delete %s: %s", filepath, err)
     if critical then
@@ -156,7 +162,7 @@ M.safe_delete = function(filepath, critical)
       M.warn(msg)
     end
   end
-  
+
   return success
 end
 
@@ -182,43 +188,51 @@ M.with_retry = function(fn, opts)
     delay = 1000, -- milliseconds
     backoff = 1.5, -- exponential backoff multiplier
     on_retry = nil, -- callback function(attempt, error)
-    should_retry = nil -- function(error) returning boolean
+    should_retry = nil, -- function(error) returning boolean
   }, opts or {})
-  
+
   local attempt = 1
   local delay = opts.delay
-  
+
   while attempt <= opts.max_attempts do
     local ok, result = pcall(fn)
-    
+
     if ok then
       return result
     end
-    
+
     -- Check if we should retry this error
     if opts.should_retry and not opts.should_retry(result) then
       M.error(result)
     end
-    
+
     if attempt < opts.max_attempts then
       if opts.on_retry then
         opts.on_retry(attempt, result)
       else
-        M.warn(string.format("Attempt %d/%d failed: %s. Retrying in %dms...", 
-          attempt, opts.max_attempts, tostring(result), delay))
+        M.warn(
+          string.format(
+            "Attempt %d/%d failed: %s. Retrying in %dms...",
+            attempt,
+            opts.max_attempts,
+            tostring(result),
+            delay
+          )
+        )
       end
-      
+
       -- Wait before retry
       vim.wait(delay)
-      
+
       -- Apply backoff
       delay = math.floor(delay * opts.backoff)
     else
       -- Final attempt failed
-      M.error(string.format("Operation failed after %d attempts: %s", 
-        opts.max_attempts, tostring(result)))
+      M.error(
+        string.format("Operation failed after %d attempts: %s", opts.max_attempts, tostring(result))
+      )
     end
-    
+
     attempt = attempt + 1
   end
 end
@@ -230,12 +244,12 @@ M.with_retry_async = function(fn, opts, callback)
     delay = 1000,
     backoff = 1.5,
     on_retry = nil,
-    should_retry = nil
+    should_retry = nil,
   }, opts or {})
-  
+
   local attempt = 1
   local delay = opts.delay
-  
+
   local function try_once()
     fn(function(success, result)
       if success then
@@ -244,7 +258,7 @@ M.with_retry_async = function(fn, opts, callback)
         end
         return
       end
-      
+
       -- Check if we should retry this error
       if opts.should_retry and not opts.should_retry(result) then
         if callback then
@@ -252,15 +266,22 @@ M.with_retry_async = function(fn, opts, callback)
         end
         return
       end
-      
+
       if attempt < opts.max_attempts then
         if opts.on_retry then
           opts.on_retry(attempt, result)
         else
-          M.warn(string.format("Attempt %d/%d failed: %s. Retrying in %dms...", 
-            attempt, opts.max_attempts, tostring(result), delay))
+          M.warn(
+            string.format(
+              "Attempt %d/%d failed: %s. Retrying in %dms...",
+              attempt,
+              opts.max_attempts,
+              tostring(result),
+              delay
+            )
+          )
         end
-        
+
         -- Schedule retry
         vim.defer_fn(function()
           attempt = attempt + 1
@@ -269,8 +290,11 @@ M.with_retry_async = function(fn, opts, callback)
         end, delay)
       else
         -- Final attempt failed
-        local error_msg = string.format("Operation failed after %d attempts: %s", 
-          opts.max_attempts, tostring(result))
+        local error_msg = string.format(
+          "Operation failed after %d attempts: %s",
+          opts.max_attempts,
+          tostring(result)
+        )
         M.notify_error(error_msg)
         if callback then
           callback(false, error_msg)
@@ -278,8 +302,8 @@ M.with_retry_async = function(fn, opts, callback)
       end
     end)
   end
-  
+
   try_once()
 end
 
-return M 
+return M
