@@ -103,7 +103,8 @@ jobs:
 
     - name: Install stylua
       run: |
-        curl -sL https://github.com/JohnnyMorganz/stylua/releases/latest/download/stylua-linux-x86_64.tar.gz | tar -xz
+        curl -sL https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64-musl.zip -o stylua.zip
+        unzip stylua.zip
         sudo mv stylua /usr/local/bin/
         sudo chmod +x /usr/local/bin/stylua
 
