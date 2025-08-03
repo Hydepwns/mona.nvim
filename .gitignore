@@ -53,3 +53,11 @@ test/plenary.nvim/
 # Temporary files
 *.tmp
 *.temp
+*.swp
+*~
+*.bak
+
+# Temporary documentation
+*_IMPROVEMENTS.md
+*_SUMMARY.md
+VERSION_*_READY.md
