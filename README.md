@@ -5,7 +5,8 @@
 
 Enhanced Monaspace font management for Neovim with automated installation, preview, and terminal config generation.
 
-> Monaspace is a next-generation font family from GitHub Next, designed for code with ligatures, texture healing, and beautiful style mixing. [Learn more](https://github.com/githubnext/monaspace)
+> Monaspace is a next-generation font family from GitHub Next, designed for code with ligatures, texture healing, and beautiful style mixing.
+> [Learn more](https://github.com/githubnext/monaspace)
 
 **💡 Preview fonts:** [monaspace.githubnext.com](https://monaspace.githubnext.com/)  
 **📦 Install:** `luarocks install mona.nvim`
@@ -25,10 +26,14 @@ luarocks install mona.nvim
 ## Features
 
 - **Automated Font Installation** - Install Monaspace fonts directly from Neovim
+- **Async Operations** - Non-blocking font installation with progress reporting
 - **Font Preview System** - Preview different font combinations side-by-side
 - **Terminal Config Generator** - Generate configs for Alacritty, Kitty, WezTerm, Ghostty
+- **Terminal Detection** - Automatically detect terminal capabilities
 - **Font Feature Control** - Texture healing, ligatures, character variants
+- **Cache Management** - Fast operations with persistent caching
 - **Health Check System** - Diagnose installation and configuration issues
+- **Smart Retry Logic** - Automatic retry with exponential backoff for network operations
 - **Cross-platform** - macOS, Linux, Windows
 
 ## Installation
@@ -86,6 +91,9 @@ use {
 | `:MonaExportConfig <terminal> [filepath]` | Generate terminal config (alacritty/kitty/wezterm/ghostty) |
 | `:MonaLoad` | Load default font style mappings |
 | `:MonaHealth` | Run health check diagnostics |
+| `:MonaCacheClear` | Clear font cache |
+| `:MonaCacheStats` | Show cache statistics |
+| `:MonaDetectTerminal` | Detect current terminal and show capabilities |
 
 ## Key Mappings
 
@@ -164,6 +172,40 @@ require("mona").setup({
     terminals = { "alacritty", "kitty", "wezterm", "ghostty" }
   }
 })
+```
+
+## Advanced Features
+
+### Async Installation
+
+Font installation runs asynchronously without blocking Neovim:
+
+```lua
+-- The installation happens in the background
+:MonaInstall variable all
+```
+
+### Cache Management
+
+The plugin caches font information for faster operations:
+
+```bash
+:MonaCacheStats    # View cache statistics
+:MonaCacheClear    # Clear all cached data
+```
+
+### Terminal Detection
+
+Automatically detect your terminal and its capabilities:
+
+```bash
+:MonaDetectTerminal
+# Output:
+# Terminal Detection:
+#   Detected: alacritty
+#   Font mixing: ✓
+#   Ligatures: ✓
+#   Variable fonts: ✓
 ```
 
 ## Font Families
