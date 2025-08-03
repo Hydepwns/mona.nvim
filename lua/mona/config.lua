@@ -55,7 +55,7 @@ function example() {
   return result || [];
 }
 /* Documentation looks better in slab serif */
--- TODO: Handwritten style for comments
+-- Comments can use handwritten style (Radon) for better readability
 ]],
     window_opts = {
       width = 80,

@@ -50,6 +50,11 @@ luacov-html/
 # Test artifacts
 test/plenary.nvim/
 
+# Cache files
+mona_nvim_cache.json
+.mona_nvim_cache.json
+cache/
+
 # Temporary files
 *.tmp
 *.temp

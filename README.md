@@ -99,8 +99,10 @@ use {
 
 - `<leader>mf` - Font preview (`:MonaPreview`)
 - `<leader>mi` - Install fonts (`:MonaInstall`)
-- `<leader>ms` - Show status (`:MonaStatus`)
+- `<leader>ms` - Check status (`:MonaStatus`)
 - `<leader>mh` - Health check (`:MonaHealth`)
+
+> **Note:** These mappings are automatically set up when the plugin is loaded. You can customize them in your configuration.
 
 ## Configuration
 

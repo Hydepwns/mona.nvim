@@ -60,51 +60,23 @@ M.check_installation = function(use_cache)
   return status
 end
 
--- Download file from URL (async version)
-M.download_file_async = function(url, filepath, progress_callback, complete_callback)
-  -- Wrap the download in retry logic
-  utils.with_retry_async(function(retry_callback)
-    local curl_cmd = string.format('curl -L --progress-bar -o "%s" "%s"', filepath, url)
-    
-    if progress_callback then
-      progress_callback("Downloading " .. url)
-    end
-    
-    local stdout = {}
-    local stderr = {}
-    
-    vim.fn.jobstart(curl_cmd, {
-      on_stdout = function(_, data, _)
-        vim.list_extend(stdout, data)
-      end,
-      on_stderr = function(_, data, _)
-        vim.list_extend(stderr, data)
-        -- Parse progress from curl
-        for _, line in ipairs(data) do
-          if line:match("%d+%%") then
-            local percent = line:match("(%d+)%%")
-            if progress_callback then
-              progress_callback(string.format("Downloading... %s%%", percent))
-            end
-          end
-        end
-      end,
-      on_exit = function(_, exit_code, _)
-        if exit_code == 0 then
-          retry_callback(true, filepath)
-        else
-          retry_callback(false, table.concat(stderr, "\n"))
-        end
+-- Download file asynchronously
+M.download_file_async = function(url, dest_path, progress_callback, callback)
+  progress_callback = progress_callback or function(msg) utils.info(msg) end
+  
+  progress_callback("Downloading " .. url)
+  
+  local curl_cmd = string.format('curl -L -o "%s" "%s"', dest_path, url)
+  
+  vim.fn.jobstart(curl_cmd, {
+    on_exit = function(_, exit_code, _)
+      if exit_code == 0 then
+        callback(true, "Download completed")
+      else
+        callback(false, "Download failed with exit code " .. exit_code)
       end
-    })
-  end, {
-    max_attempts = 3,
-    delay = 2000,
-    should_retry = function(err)
-      -- Retry on network errors
-      return err:match("curl") or err:match("timeout") or err:match("Could not resolve")
     end
-  }, complete_callback)
+  })
 end
 
 -- Download file from URL (sync version for compatibility)

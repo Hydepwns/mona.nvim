@@ -179,4 +179,24 @@ vim.api.nvim_create_user_command("MonaDetectTerminal", function()
   print(string.format("  Variable fonts: %s", capabilities.variable_fonts and "✓" or "✗"))
 end, {
   desc = "Detect current terminal and show capabilities"
-}) 
+})
+
+-- Set up key mappings
+local function setup_keymaps()
+  local opts = { noremap = true, silent = true }
+  
+  -- Font preview
+  vim.keymap.set("n", "<leader>mf", ":MonaPreview<CR>", opts)
+  
+  -- Install fonts
+  vim.keymap.set("n", "<leader>mi", ":MonaInstall<CR>", opts)
+  
+  -- Check status
+  vim.keymap.set("n", "<leader>ms", ":MonaStatus<CR>", opts)
+  
+  -- Health check
+  vim.keymap.set("n", "<leader>mh", ":MonaHealth<CR>", opts)
+end
+
+-- Set up key mappings when plugin loads
+setup_keymaps() 

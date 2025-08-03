@@ -47,5 +47,7 @@ lint:
 # Clean up test artifacts
 clean:
 	@echo "Cleaning up..."
-	@rm -f
+	@rm -f luacov.report.out luacov.stats.out
+	@rm -rf luacov-html/
+	@rm -f *.tmp *.temp
 	@echo "✓ Cleanup completed" 
