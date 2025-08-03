@@ -1,5 +1,6 @@
 local M = {}
 local utils = require("mona.utils")
+local cache = require("mona.cache")
 
 M.configs = {
   alacritty = function(font_map)
@@ -88,6 +89,106 @@ M.get_default_paths = function()
     kitty = home .. "/.config/kitty/kitty.conf",
     wezterm = home .. "/.config/wezterm/wezterm.lua",
     ghostty = home .. "/.config/ghostty/config"
+  }
+end
+
+-- Detect current terminal
+M.detect = function(use_cache)
+  use_cache = use_cache ~= false -- default to using cache
+  
+  -- Try to get from cache first
+  if use_cache then
+    local cached_terminal = cache.get(cache.keys.terminal_type())
+    if cached_terminal then
+      return cached_terminal
+    end
+  end
+  
+  local terminal_checks = {
+    -- Check environment variables first
+    { env = "TERM_PROGRAM", value = "ghostty", name = "ghostty" },
+    { env = "TERM_PROGRAM", value = "WezTerm", name = "wezterm" },
+    { env = "TERM_PROGRAM", value = "iTerm.app", name = "iterm2" },
+    { env = "TERM_PROGRAM", value = "vscode", name = "vscode" },
+    { env = "KITTY_WINDOW_ID", value = nil, name = "kitty" },
+    { env = "ALACRITTY_SOCKET", value = nil, name = "alacritty" },
+    { env = "VTE_VERSION", value = nil, name = "gnome-terminal" },
+    { env = "KONSOLE_VERSION", value = nil, name = "konsole" },
+    { env = "XTERM_VERSION", value = nil, name = "xterm" },
+    { env = "TMUX", value = nil, name = "tmux" },
+  }
+  
+  -- Check environment variables
+  for _, check in ipairs(terminal_checks) do
+    local env_value = vim.env[check.env]
+    if env_value then
+      if not check.value or env_value:match(check.value) then
+        -- Cache the detected terminal
+        cache.set(cache.keys.terminal_type(), check.name, 1800) -- 30 minute TTL
+        return check.name
+      end
+    end
+  end
+  
+  -- Fallback to process detection on Unix-like systems
+  if utils.get_os() ~= "Windows" then
+    local ppid = vim.fn.getpid()
+    local ps_cmd = string.format("ps -p %d -o ppid=", ppid)
+    local parent_pid = vim.fn.system(ps_cmd):gsub("%s+", "")
+    
+    if parent_pid ~= "" then
+      local parent_cmd = string.format("ps -p %s -o comm=", parent_pid)
+      local parent_process = vim.fn.system(parent_cmd):gsub("%s+", ""):lower()
+      
+      -- Map process names to terminal types
+      local process_map = {
+        alacritty = "alacritty",
+        kitty = "kitty",
+        wezterm = "wezterm",
+        ["wezterm-gui"] = "wezterm",
+        ghostty = "ghostty",
+        iterm2 = "iterm2",
+        ["gnome-terminal"] = "gnome-terminal",
+        konsole = "konsole",
+        xterm = "xterm",
+      }
+      
+      for process, terminal in pairs(process_map) do
+        if parent_process:match(process) then
+          -- Cache the detected terminal
+          cache.set(cache.keys.terminal_type(), terminal, 1800) -- 30 minute TTL
+          return terminal
+        end
+      end
+    end
+  end
+  
+  -- Cache unknown result
+  cache.set(cache.keys.terminal_type(), "unknown", 300) -- 5 minute TTL
+  return "unknown"
+end
+
+-- Get terminal capabilities
+M.capabilities = function(terminal)
+  terminal = terminal or M.detect()
+  
+  local capabilities_map = {
+    alacritty = { font_mixing = true, ligatures = true, variable_fonts = true },
+    kitty = { font_mixing = true, ligatures = true, variable_fonts = true },
+    wezterm = { font_mixing = true, ligatures = true, variable_fonts = true },
+    ghostty = { font_mixing = true, ligatures = true, variable_fonts = true },
+    iterm2 = { font_mixing = true, ligatures = true, variable_fonts = true },
+    ["gnome-terminal"] = { font_mixing = false, ligatures = false, variable_fonts = false },
+    konsole = { font_mixing = false, ligatures = true, variable_fonts = false },
+    xterm = { font_mixing = false, ligatures = false, variable_fonts = false },
+    vscode = { font_mixing = false, ligatures = true, variable_fonts = true },
+    tmux = { font_mixing = false, ligatures = false, variable_fonts = false },
+  }
+  
+  return capabilities_map[terminal] or {
+    font_mixing = false,
+    ligatures = false,
+    variable_fonts = false
   }
 end
 

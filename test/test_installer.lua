@@ -39,6 +39,15 @@ vim = {
         return "Command executed"
       end
     end,
+    systemlist = function(cmd)
+      if cmd:match("find.*%.ttf") then
+        return { "/tmp/mona_test_12345/MonaspaceNeon-Regular.ttf" }
+      elseif cmd:match("find.*%.otf") then
+        return { "/tmp/mona_test_12345/MonaspaceNeon-Regular.otf" }
+      else
+        return {}
+      end
+    end,
     tempname = function()
       return "/tmp/mona_test_12345"
     end,
@@ -47,6 +56,18 @@ vim = {
     end,
     delete = function(path, flags)
       -- Mock implementation
+    end,
+    json_decode = function(str)
+      -- Simple JSON parser for test
+      if str:match('"tag_name"%s*:%s*"v1%.0%.0"') then
+        return {
+          tag_name = "v1.0.0",
+          assets = {{
+            browser_download_url = "https://example.com/monaspace.zip"
+          }}
+        }
+      end
+      error("Invalid JSON")
     end,
     writefile = function(lines, filepath)
       -- Mock implementation
@@ -279,13 +300,13 @@ local function test_installer_get_latest_release()
   local original_system = vim.fn.system
   vim.fn.system = function(cmd)
     if cmd:match("curl.*github%.com") then
-      return '{"tag_name": "v1.0.0", "browser_download_url": "https://example.com/monaspace.zip"}'
+      return '{"tag_name": "v1.0.0", "assets": [{"browser_download_url": "https://example.com/monaspace.zip"}]}'
     else
       return ""
     end
   end
   
-  local release = installer.get_latest_release()
+  local release = installer.get_latest_release(false) -- disable cache for test
   
   -- Test return structure
   assert(type(release) == "table", "get_latest_release should return a table")

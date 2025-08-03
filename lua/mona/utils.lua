@@ -28,14 +28,19 @@ M.notify = function(message, level)
   vim.notify(message, level)
 end
 
--- Consistent error function with plugin prefix
+-- Consistent error function with plugin prefix (throws error - stops execution)
 M.error = function(message)
   error(string.format("[mona.nvim] %s", message))
 end
 
+-- Non-throwing error notification (continues execution)
+M.notify_error = function(message)
+  M.notify(string.format("[mona.nvim] %s", message), vim.log.levels.ERROR)
+end
+
 -- Consistent warning function
 M.warn = function(message)
-  M.notify(message, vim.log.levels.WARN)
+  M.notify(string.format("[mona.nvim] %s", message), vim.log.levels.WARN)
 end
 
 -- Consistent info function
@@ -99,39 +104,57 @@ M.validate_enum = function(value, name, allowed_values)
 end
 
 -- Safe file operations
-M.safe_write_file = function(filepath, content)
+M.safe_write_file = function(filepath, content, critical)
+  critical = critical ~= false -- default to critical
   local success, err = pcall(function()
     vim.fn.writefile(vim.split(content, "\n"), vim.fn.expand(filepath))
   end)
   
   if not success then
-    M.error(string.format("Failed to write file %s: %s", filepath, err))
+    local msg = string.format("Failed to write file %s: %s", filepath, err)
+    if critical then
+      M.error(msg)
+    else
+      M.notify_error(msg)
+    end
   end
   
   return success
 end
 
 -- Safe directory creation
-M.safe_mkdir = function(dirpath)
+M.safe_mkdir = function(dirpath, critical)
+  critical = critical ~= false -- default to critical
   local success, err = pcall(function()
     vim.fn.mkdir(dirpath, "p")
   end)
   
   if not success then
-    M.error(string.format("Failed to create directory %s: %s", dirpath, err))
+    local msg = string.format("Failed to create directory %s: %s", dirpath, err)
+    if critical then
+      M.error(msg)
+    else
+      M.notify_error(msg)
+    end
   end
   
   return success
 end
 
 -- Safe file deletion
-M.safe_delete = function(filepath)
+M.safe_delete = function(filepath, critical)
+  critical = critical == true -- default to non-critical for deletions
   local success, err = pcall(function()
     vim.fn.delete(filepath, "rf")
   end)
   
   if not success then
-    M.warn(string.format("Failed to delete %s: %s", filepath, err))
+    local msg = string.format("Failed to delete %s: %s", filepath, err)
+    if critical then
+      M.error(msg)
+    else
+      M.warn(msg)
+    end
   end
   
   return success
@@ -150,6 +173,113 @@ end
 -- Format font family name (capitalize first letter)
 M.format_font_family = function(family)
   return family:gsub("^%l", string.upper)
+end
+
+-- Retry logic wrapper
+M.with_retry = function(fn, opts)
+  opts = vim.tbl_deep_extend("force", {
+    max_attempts = 3,
+    delay = 1000, -- milliseconds
+    backoff = 1.5, -- exponential backoff multiplier
+    on_retry = nil, -- callback function(attempt, error)
+    should_retry = nil -- function(error) returning boolean
+  }, opts or {})
+  
+  local attempt = 1
+  local delay = opts.delay
+  
+  while attempt <= opts.max_attempts do
+    local ok, result = pcall(fn)
+    
+    if ok then
+      return result
+    end
+    
+    -- Check if we should retry this error
+    if opts.should_retry and not opts.should_retry(result) then
+      M.error(result)
+    end
+    
+    if attempt < opts.max_attempts then
+      if opts.on_retry then
+        opts.on_retry(attempt, result)
+      else
+        M.warn(string.format("Attempt %d/%d failed: %s. Retrying in %dms...", 
+          attempt, opts.max_attempts, tostring(result), delay))
+      end
+      
+      -- Wait before retry
+      vim.wait(delay)
+      
+      -- Apply backoff
+      delay = math.floor(delay * opts.backoff)
+    else
+      -- Final attempt failed
+      M.error(string.format("Operation failed after %d attempts: %s", 
+        opts.max_attempts, tostring(result)))
+    end
+    
+    attempt = attempt + 1
+  end
+end
+
+-- Async retry logic wrapper
+M.with_retry_async = function(fn, opts, callback)
+  opts = vim.tbl_deep_extend("force", {
+    max_attempts = 3,
+    delay = 1000,
+    backoff = 1.5,
+    on_retry = nil,
+    should_retry = nil
+  }, opts or {})
+  
+  local attempt = 1
+  local delay = opts.delay
+  
+  local function try_once()
+    fn(function(success, result)
+      if success then
+        if callback then
+          callback(true, result)
+        end
+        return
+      end
+      
+      -- Check if we should retry this error
+      if opts.should_retry and not opts.should_retry(result) then
+        if callback then
+          callback(false, result)
+        end
+        return
+      end
+      
+      if attempt < opts.max_attempts then
+        if opts.on_retry then
+          opts.on_retry(attempt, result)
+        else
+          M.warn(string.format("Attempt %d/%d failed: %s. Retrying in %dms...", 
+            attempt, opts.max_attempts, tostring(result), delay))
+        end
+        
+        -- Schedule retry
+        vim.defer_fn(function()
+          attempt = attempt + 1
+          delay = math.floor(delay * opts.backoff)
+          try_once()
+        end, delay)
+      else
+        -- Final attempt failed
+        local error_msg = string.format("Operation failed after %d attempts: %s", 
+          opts.max_attempts, tostring(result))
+        M.notify_error(error_msg)
+        if callback then
+          callback(false, error_msg)
+        end
+      end
+    end)
+  end
+  
+  try_once()
 end
 
 return M 
