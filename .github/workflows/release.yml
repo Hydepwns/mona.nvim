@@ -92,7 +92,7 @@ jobs:
         fi
         
         # Validate rockspec
-        luarocks validate "$ROCKSPEC"
+        luarocks lint "$ROCKSPEC"
         
         # Upload to LuaRocks (requires API key)
         if [ -n "${{ secrets.LUAROCKS_API_KEY }}" ]; then
