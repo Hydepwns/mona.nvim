@@ -54,7 +54,7 @@ jobs:
         eval "$(luarocks path --bin)"
 
     - name: Run validation
-      run: lua validate.lua || echo "Validation failed, but continuing"
+      run: lua scripts/validate.lua || echo "Validation failed, but continuing"
 
     - name: Run unit tests
       run: |
@@ -93,7 +93,7 @@ jobs:
     - name: Run luacheck
       run: |
         eval "$(luarocks path --bin)" || true
-        luacheck lua/ test/ validate.lua --exclude-files test/plenary.nvim --no-max-line-length || echo "Linting completed with warnings"
+        luacheck lua/ test/ scripts/validate.lua --exclude-files test/plenary.nvim --no-max-line-length || echo "Linting completed with warnings"
 
   format:
     runs-on: ubuntu-latest
@@ -103,12 +103,13 @@ jobs:
 
     - name: Install stylua
       run: |
-        curl -sL https://github.com/JohnnyMorganz/stylua/releases/latest/download/stylua-linux-x86_64 | sudo tee /usr/local/bin/stylua > /dev/null
+        curl -sL https://github.com/JohnnyMorganz/stylua/releases/latest/download/stylua-linux-x86_64.tar.gz | tar -xz
+        sudo mv stylua /usr/local/bin/
         sudo chmod +x /usr/local/bin/stylua
 
     - name: Check code formatting
       run: |
-        stylua --check lua/ plugin/ test/ validate.lua
+        stylua --check lua/ plugin/ test/ scripts/validate.lua
 
   build:
     runs-on: ubuntu-latest

@@ -37,25 +37,25 @@ test-integration:
 # Run validation
 validate:
 	@echo "Running validation..."
-	@lua validate.lua
+	@lua scripts/validate.lua
 	@echo "✓ Validation completed"
 
 # Run luacheck linting
 lint:
 	@echo "Running luacheck linting..."
-	@luacheck lua/ test/ validate.lua --exclude-files test/plenary.nvim --no-max-line-length
+	@luacheck lua/ test/ scripts/validate.lua --exclude-files test/plenary.nvim --no-max-line-length
 	@echo "✓ Linting completed"
 
 # Format code with stylua
 format:
 	@echo "Formatting code with stylua..."
-	@stylua lua/ plugin/ test/ validate.lua
+	@stylua lua/ plugin/ test/ scripts/validate.lua
 	@echo "✓ Code formatting completed"
 
 # Check code formatting
 format-check:
 	@echo "Checking code formatting..."
-	@stylua --check lua/ plugin/ test/ validate.lua
+	@stylua --check lua/ plugin/ test/ scripts/validate.lua
 	@echo "✓ Code formatting check completed"
 
 # Clean up test artifacts
