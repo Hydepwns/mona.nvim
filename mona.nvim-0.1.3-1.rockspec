@@ -1,10 +1,10 @@
 package = "mona.nvim"
-version = "0.1.2-1"
+version = "0.1.3-1"
 rockspec_format = "3.0"
 
 source = {
   url = "git+https://github.com/hydepwns/mona.nvim",
-  tag = "v0.1.2"
+  tag = "v0.1.3"
 }
 
 description = {
@@ -31,7 +31,7 @@ build = {
     ["mona.health"] = "lua/mona/health.lua",
     ["mona.highlights"] = "lua/mona/highlights.lua",
     ["mona.utils"] = "lua/mona/utils.lua",
-    ["mona.plugin"] = "lua/mona/plugin.lua",
+    ["mona.cache"] = "lua/mona/cache.lua",
     ["plugin.mona"] = "plugin/mona.lua"
   }
-} 
+}
