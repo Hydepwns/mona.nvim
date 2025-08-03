@@ -103,9 +103,8 @@ jobs:
 
     - name: Install stylua
       run: |
-        curl -sL https://github.com/JohnnyMorganz/stylua/releases/latest/download/stylua-linux.zip | funzip > stylua
-        chmod +x stylua
-        sudo mv stylua /usr/local/bin/
+        curl -sL https://github.com/JohnnyMorganz/stylua/releases/latest/download/stylua-linux-x86_64 | sudo tee /usr/local/bin/stylua > /dev/null
+        sudo chmod +x /usr/local/bin/stylua
 
     - name: Check code formatting
       run: |
