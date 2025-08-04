@@ -27,20 +27,20 @@ luarocks install mona.nvim
 
 | Feature | Badge | Description |
 |---------|-------|-------------|
-| **Font Installation** | ![Font Installation](https://img.shields.io/badge/Font%20Installation-Automated-brightgreen) | Automated font installation directly from Neovim |
-| **Async Operations** | ![Async](https://img.shields.io/badge/Async-Non--blocking-blue) | Non-blocking operations with progress reporting |
-| **Font Preview** | ![Preview](https://img.shields.io/badge/Preview-Interactive-orange) | Preview different font combinations side-by-side |
-| **Terminal Configs** | ![Terminal](https://img.shields.io/badge/Terminal-Configs-purple) | Generate configs for Alacritty, Kitty, WezTerm, Ghostty |
-| **Terminal Detection** | ![Detection](https://img.shields.io/badge/Detection-Auto--detect-yellow) | Automatically detect terminal capabilities |
-| **Font Features** | ![Features](https://img.shields.io/badge/Features-Advanced-red) | Texture healing, ligatures, character variants |
-| **Cache Management** | ![Cache](https://img.shields.io/badge/Cache-Persistent-green) | Fast operations with persistent caching |
-| **Health Checks** | ![Health](https://img.shields.io/badge/Health-Diagnostics-blue) | Diagnose installation and configuration issues |
-| **Retry Logic** | ![Retry](https://img.shields.io/badge/Retry-Smart-orange) | Automatic retry with exponential backoff |
-| **Cross-platform** | ![Platform](https://img.shields.io/badge/Platform-Cross--platform-lightgrey) | macOS, Linux, Windows support |
-| **LuaRocks** | ![LuaRocks](https://img.shields.io/badge/LuaRocks-Installable-blue) | Easy installation via LuaRocks |
-| **CI/CD** | ![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-green) | Automated testing and releases |
-| **Code Quality** | ![Quality](https://img.shields.io/badge/Quality-Formatted-brightgreen) | Stylua formatting, luacheck linting |
-| **Documentation** | ![Docs](https://img.shields.io/badge/Docs-Comprehensive-blue) | Comprehensive docs and examples |
+| **Font Installation** | ![GitHub Releases](https://img.shields.io/badge/GitHub-Releases-lightgrey) | Automated font installation directly from Neovim |
+| **Async Operations** | ![Neovim](https://img.shields.io/badge/Neovim-Async-blue) | Non-blocking operations with progress reporting |
+| **Font Preview** | ![Neovim](https://img.shields.io/badge/Neovim-Floating%20Window-blue) | Preview different font combinations side-by-side |
+| **Terminal Configs** | ![Alacritty](https://img.shields.io/badge/Alacritty-Config-green) ![Kitty](https://img.shields.io/badge/Kitty-Config-green) ![WezTerm](https://img.shields.io/badge/WezTerm-Config-green) ![Ghostty](https://img.shields.io/badge/Ghostty-Config-green) | Generate configs for Alacritty, Kitty, WezTerm, Ghostty |
+| **Terminal Detection** | ![Environment](https://img.shields.io/badge/Environment-Variables-orange) | Automatically detect terminal capabilities |
+| **Font Features** | ![OpenType](https://img.shields.io/badge/OpenType-Features-red) | Texture healing, ligatures, character variants |
+| **Cache Management** | ![JSON](https://img.shields.io/badge/JSON-Cache-yellow) | Fast operations with persistent caching |
+| **Health Checks** | ![Diagnostics](https://img.shields.io/badge/Diagnostics-Health%20Check-blue) | Diagnose installation and configuration issues |
+| **Retry Logic** | ![Network](https://img.shields.io/badge/Network-Retry%20Logic-orange) | Automatic retry with exponential backoff |
+| **Cross-platform** | ![Linux](https://img.shields.io/badge/Linux-Supported-green) ![macOS](https://img.shields.io/badge/macOS-Supported-green) ![Windows](https://img.shields.io/badge/Windows-Supported-green) | macOS, Linux, Windows support |
+| **LuaRocks** | ![LuaRocks](https://img.shields.io/luarocks/v/hydepwns/mona.nvim?color=blue) | Easy installation via LuaRocks |
+| **CI/CD** | ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-green) | Automated testing and releases |
+| **Code Quality** | ![StyLua](https://img.shields.io/badge/StyLua-Formatter-brightgreen) ![Luacheck](https://img.shields.io/badge/Luacheck-Linter-blue) | Stylua formatting, luacheck linting |
+| **Documentation** | ![Markdown](https://img.shields.io/badge/Markdown-Documentation-blue) | Comprehensive docs and examples |
 
 ## Installation
 
@@ -257,24 +257,10 @@ make test-unit          # Unit tests
 make test-integration   # Integration tests
 make validate           # Validation script
 make lint               # Run luacheck linting
-make format             # Format code with stylua
+make format             # Format code with stylua.toml
 make format-check       # Check code formatting
 make clean              # Clean artifacts
 ```
-
-### Code Formatting
-
-This project uses [stylua](https://github.com/JohnnyMorganz/stylua) for consistent code formatting:
-
-```bash
-# Format all Lua files
-make format
-
-# Check formatting without making changes
-make format-check
-```
-
-The formatting configuration is in `stylua.toml`.
 
 ## License
 
