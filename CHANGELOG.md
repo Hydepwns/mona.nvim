@@ -43,6 +43,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved CI reliability with better error handling and debugging
 - Resolved "Unusable report" errors in Codecov uploads
 
+## [0.1.4] - 2025-01-27
+
+### Added
+
+- Automated releases via GitHub Actions
+- Dependabot integration for dependency updates
+
 ## [Unreleased]
 
 ### Added
